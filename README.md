@@ -3,6 +3,9 @@
 1. Python 3.6.3
 2. Anaconda 4.3.33 (or numpy 1.14.0 and pandas 0.22.0)
 
+# Program Flow
+![Alt text](./src/pictures/program_flow.png)
+
 # Where to run program:
 
 **[Repo Root path]/run.sh**
