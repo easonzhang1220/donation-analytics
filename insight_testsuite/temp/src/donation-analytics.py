@@ -102,7 +102,7 @@ def add_to_history(line):
 # percentile.txt, holds a single value -- the percentile value (1-100) that your program will be asked to calculate.
 
 
-def contribution_from_repeat_donors(line):
+def contribution_from_repeat_donors(line,output_File):
     #first 3 output values
     recipient_mask = history_Data['CMTE_ID'] == line.CMTE_ID
     zipcode_mask = history_Data['ZIP_CODE'] == line.ZIP_CODE[:5]
@@ -111,35 +111,35 @@ def contribution_from_repeat_donors(line):
     # get the a list of 'TRANSACTION_AMT' after apply the above filters
     repeat_donors = history_Data[recipient_mask & zipcode_mask & year_mask]['TRANSACTION_AMT']
     repeat_donors_contributions = list(map(int, list(repeat_donors)))
+    #repeat_donors_contributions.sort()
   
     #caculating percentile data:
     percentile = pd.read_csv('./input/percentile.txt',header = None).values[0][0]
 
     #For the percentile computation use the **nearest-rank method** by numpy.percentile function 
     #with parameter interpolation='nearest'
+    
     percentile_amount = np.percentile(repeat_donors_contributions,percentile,interpolation='nearest')
     #Percentile calculations should be rounded to the whole dollar (drop anything below $.50 and 
     #round anything from $.50 and up to the next dollar)
-    if percentile_amount == 0.5:
-        percentile_amount = 1
-    else:
-        percentile_amount = round(percentile_amount)
+    percentile_amount = int(round(percentile_amount + 1e-15))
         
     #combine the output line:
     output = line.CMTE_ID + '|' + line.ZIP_CODE[:5] + '|' + line.TRANSACTION_DT[-4:] + '|' + str(percentile_amount) + '|' + str(sum(repeat_donors_contributions)) + '|' + str(len(repeat_donors_contributions))
-    print("Append \"%s\" to repeat_donors.txt file." %output)
+    print("Write \"%s\" to repeat_donors.txt file." %output)
     
     # Write output line to output file 
-    File = open('./output/repeat_donors.txt','a')
-    File.write(output + "\n")  
-    File.close()
+    output_File.write(output + "\n")  
+    #output_File.close()
 
     
 ###### the main() function of the program ######   
     
 def main():
     file = open('./input/itcont.txt')
-
+    
+    output_File = open('./output/repeat_donors.txt','w')
+    
     for line in file:
             line = pd.Series(line.split('|'),index = head_columns)     
 
@@ -156,13 +156,14 @@ def main():
             if repeat_donor(line) is True:
                 add_to_history(line)
                 #print("Find a Repeat Donor") 
-                contribution_from_repeat_donors(line)         
+                contribution_from_repeat_donors(line,output_File)         
             else:
                 add_to_history(line)
                 #print('Not a Repeat Donor, add to history_Data database.')
 
     #force the file closed
     file.close()
+    output_File.close()
 
 
 if __name__ == "__main__":
