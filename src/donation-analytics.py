@@ -130,7 +130,6 @@ def contribution_from_repeat_donors(line,output_File):
     
     # Write output line to output file 
     output_File.write(output + "\n")  
-    #output_File.close()
 
     
 ###### the main() function of the program ######   
