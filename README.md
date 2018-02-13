@@ -9,6 +9,7 @@
 # Where to run program:
 
 **[Repo Root path]/run.sh**
+
 ![Alt text](./src/pictures/run.png)
 
 # Repo directory structure
