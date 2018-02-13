@@ -65,7 +65,7 @@ The directory structure:
    
  # Testing the directory structure and output format
  
- run test command  [donation-analytics]/insight_testsuite/run_tests.sh
+ run command  [donation-analytics]/insight_testsuite/run_tests.sh
  and the results show the program pass all the 5 test cases. 
  ![Alt text](./src/pictures/test_results.png)
   
